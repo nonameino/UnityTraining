@@ -1,2 +1,3 @@
 # UnityTraining
-Repository for Unity Training Class
+
+Unity Training Program
