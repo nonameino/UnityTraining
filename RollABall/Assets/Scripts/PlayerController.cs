@@ -41,16 +41,16 @@ public class PlayerController : MonoBehaviour
     protected void OnTriggerEnter(Collider other) {
         
         if (other.gameObject.CompareTag("PickUp")) {
-            //Disactive collider object
-            // other.transform.parent.gameObject.SetActive(false);
-            GameObject.Find("GameController").GetComponent<SpawnController>().ReturnPickUpToPool(other.transform.parent.gameObject);
-
             //Update count
             count = count + 1;
             SetCountText(count);
             
             //Remove collider position
             targetStack.RemoveAt(GetIndexOfCollider(other));
+
+            //Disactive collider object
+            // other.transform.parent.gameObject.SetActive(false);
+            SpawnController.Instance().ReturnPickUpToPool(other.gameObject);
         }
     }
 
