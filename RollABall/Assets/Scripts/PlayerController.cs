@@ -33,12 +33,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public void FixedUpdate() {
-        // float moveVertical = Input.GetAxis("Vertical");
-        // float moveHorizontal = Input.GetAxis("Horizontal");
-
-        // Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical) * speed;
-        // rb.AddForce(movement);
-
         if (targetStack.Count > 0) {
             this.transform.position = Vector3.MoveTowards(this.transform.position, targetStack[0], speed*Time.deltaTime);
         }
@@ -48,7 +42,8 @@ public class PlayerController : MonoBehaviour
         
         if (other.gameObject.CompareTag("PickUp")) {
             //Disactive collider object
-            other.transform.parent.gameObject.SetActive(false);
+            // other.transform.parent.gameObject.SetActive(false);
+            GameObject.Find("GameController").GetComponent<SpawnController>().ReturnPickUpToPool(other.transform.parent.gameObject);
 
             //Update count
             count = count + 1;

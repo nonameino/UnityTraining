@@ -1242,6 +1242,7 @@ MonoBehaviour:
   collector: {fileID: 1971587105}
   spawnObject: {fileID: 5244155376464684874, guid: 9341f3dffe4df443598d979f54951270,
     type: 3}
+  spawnNumber: 5
   layerMask:
     serializedVersion: 2
     m_Bits: 256
