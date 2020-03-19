@@ -12,12 +12,16 @@ public class PlayerController : MonoBehaviour
     private int count;
     public LayerMask layerMask;
     private List<Vector3> targetStack;
+    private bool isMoving;
+    private Animator animator;
 
     public void Start() {
         rb = this.GetComponent<Rigidbody>();
         count = 0;
         countText.text = "Count: 0";
         targetStack = new List<Vector3>();
+        isMoving = false;
+        animator = this.GetComponent<Animator>();
     }
 
     private void Update() {
@@ -28,13 +32,18 @@ public class PlayerController : MonoBehaviour
 
                 //Add list target
                 targetStack.Add(raycastHit.point);
+                
+                if(!isMoving) {
+                    isMoving = true;
+                    animator.SetTrigger("Move");
+                }
             }
         }
     }
 
     public void FixedUpdate() {
         if (targetStack.Count > 0) {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, targetStack[0], speed*Time.deltaTime);
+            this.transform.parent.position = Vector3.MoveTowards(this.transform.parent.position, targetStack[0], speed*Time.deltaTime);
         }
     }
 
@@ -47,6 +56,10 @@ public class PlayerController : MonoBehaviour
             
             //Remove collider position
             targetStack.RemoveAt(GetIndexOfCollider(other));
+            if (targetStack.Count == 0 && isMoving) {
+                isMoving = false;
+                animator.SetTrigger("Idle");
+            }
 
             //Disactive collider object
             // other.transform.parent.gameObject.SetActive(false);
