@@ -33,12 +33,16 @@ public class SpawnController : MonoBehaviour
             if (Physics.Raycast(ray, out hit, 100, layerMask)) {
                 GameObject pickup = spawnObject.Spawn(hit.point);
                 int colorID = (Random.Range(0, 3) % 3); //0:Red, 1:Green, 2:Blue
+                pickup.GetComponentInChildren<Collider>().enabled = true;
+                // pickup.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 pickup.GetComponentInChildren<Animator>().SetInteger("ColorID", colorID);
             }
         }
     }
 
     public void ReturnPickUpToPool(GameObject pickup) {
-        pickup.transform.parent.gameObject.Kill();
+        pickup.GetComponent<Collider>().enabled = false;
+        pickup.GetComponent<Animator>().SetTrigger("Die");
+        // pickup.transform.parent.gameObject.Kill();
     }
 }
