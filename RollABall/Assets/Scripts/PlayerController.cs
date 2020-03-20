@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     public void FixedUpdate() {
         if (targetStack.Count > 0) {
             this.transform.parent.position = Vector3.MoveTowards(this.transform.parent.position, targetStack[0], speed*Time.deltaTime);
+            this.transform.LookAt(targetStack[0]);
         }
     }
 
