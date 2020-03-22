@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MovingObject
 {
@@ -17,6 +18,7 @@ public class Player : MovingObject
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator>();
+		food = GameManager.instance.playerFoodPoints;
 		base.Start ();
 	}
 	
@@ -42,6 +44,7 @@ public class Player : MovingObject
 		{
 			vertical = 0;
 		}
+
 		if(horizontal != 0 || vertical != 0) {
 			AttemptMove<Wall> (horizontal, vertical);
 		}
@@ -51,6 +54,9 @@ public class Player : MovingObject
 	{
 		food--;
 		base.AttemptMove <T> (xDir, yDir);
+
+		RaycastHit2D hit;
+		Move (xDir, yDir, out hit);
 		
 		CheckIfGameOver ();
 		
