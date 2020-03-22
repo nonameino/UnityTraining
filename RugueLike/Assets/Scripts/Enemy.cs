@@ -5,6 +5,8 @@ using UnityEngine;
 public class Enemy : MovingObject
 {
     public int playerDamage;
+	public AudioClip attackSound1;
+	public AudioClip attackSound2;
 	
 	private Animator animator;
 	private Transform target;
@@ -44,8 +46,9 @@ public class Enemy : MovingObject
 	
 	protected override void OnCantMove <T> (T component) {
 		Player hitPlayer = component as Player;
-		animator.SetTrigger ("enemyAttack");
 		hitPlayer.LoseFood (playerDamage);
+		animator.SetTrigger ("enemyAttack");
+		SoundManager.instance.RandomizeSfx (attackSound1, attackSound2);
 	}
 
     // Update is called once per frame
