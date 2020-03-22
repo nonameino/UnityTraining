@@ -139,4 +139,8 @@ public class Player : MovingObject
 			GameManager.instance.GameOver ();
 		}
 	}
+
+	private void Restart () {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+	}
 }

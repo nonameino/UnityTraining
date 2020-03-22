@@ -35,6 +35,13 @@ public class GameManager : MonoBehaviour
 		InitGame();
 	}
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static public void CallbackInitialization()
+    {
+        //register the callback to be called everytime the scene is loaded
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
     static private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1) {
         instance.level++;
         instance.InitGame();
@@ -43,8 +50,6 @@ public class GameManager : MonoBehaviour
     void InitGame() {
 		doingSetup = true;
 		levelImage = GameObject.Find("LevelImage");
-        Debug.Log("" + (levelImage ? 1 : 0));
-        Debug.Log("" + (GameObject.Find("LevelText") ? 1 : 0));
 		levelText = GameObject.Find("LevelText").GetComponent<Text>();
 		levelText.text = "Day " + level;
 		levelImage.SetActive(true);
