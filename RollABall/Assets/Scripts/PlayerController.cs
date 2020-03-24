@@ -33,22 +33,22 @@ public class PlayerController : MonoBehaviour
 
     public void StartSpawn() {
 
-        if (diePsInstance != null && diePsInstance.isPlaying) {
-            diePsInstance.Stop();
-            Debug.Log("Stop die");
-        }
+        // if (diePsInstance != null && diePsInstance.isPlaying) {
+        //     diePsInstance.Stop();
+        //     Debug.Log("Stop die");
+        // }
 
-        if (spawnPsInstance == null) {
-            spawnPsInstance = Instantiate(spawnPsPrefab ,Vector3.zero , Quaternion.identity);
-            spawnPsInstance.transform.parent = transform.parent;
-        }
-        if (!spawnPsInstance.isPlaying) {
-            spawnPsInstance.Play();
-            Debug.Log("Start Spawn");
-        }
+        // if (spawnPsInstance == null) {
+        //     spawnPsInstance = Instantiate(spawnPsPrefab ,Vector3.zero , Quaternion.identity);
+        //     spawnPsInstance.transform.parent = transform.parent;
+        // }
+        // if (!spawnPsInstance.isPlaying) {
+        //     spawnPsInstance.Play();
+        //     Debug.Log("Start Spawn");
+        // }
 
         this.transform.parent.position = Vector3.zero;
-        stopMove = true;
+        // stopMove = true;
     }
 
     public void EndSpawn() {
