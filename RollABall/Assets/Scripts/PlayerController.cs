@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public float speed;
-    public Text countText;               
+    public Text countText;   
+    public ParticleSystem diePsPrefab;
+    public ParticleSystem spawnPsPrefab;          
 
     private Rigidbody rb;
     private int count;
@@ -14,6 +16,10 @@ public class PlayerController : MonoBehaviour
     private List<Vector3> targetStack;
     private bool isMoving;
     private Animator animator;
+    private bool stopMove;
+
+    private ParticleSystem diePsInstance =  null;
+    private ParticleSystem spawnPsInstance = null;
 
     public void Start() {
         rb = this.GetComponent<Rigidbody>();
@@ -22,6 +28,41 @@ public class PlayerController : MonoBehaviour
         targetStack = new List<Vector3>();
         isMoving = false;
         animator = this.GetComponent<Animator>();
+        StartSpawn();
+    }
+
+    public void StartSpawn() {
+
+        if (diePsInstance != null && diePsInstance.isPlaying) {
+            diePsInstance.Stop();
+            Debug.Log("Stop die");
+        }
+
+        if (spawnPsInstance == null) {
+            spawnPsInstance = Instantiate(spawnPsPrefab ,Vector3.zero , Quaternion.identity);
+            spawnPsInstance.transform.parent = transform.parent;
+        }
+        if (!spawnPsInstance.isPlaying) {
+            spawnPsInstance.Play();
+            Debug.Log("Start Spawn");
+        }
+
+        this.transform.parent.position = Vector3.zero;
+        stopMove = true;
+    }
+
+    public void EndSpawn() {
+        if (spawnPsInstance.isPlaying) {
+            spawnPsInstance.Stop();
+            Debug.Log("Stop Spawn");
+        }
+
+        stopMove = false;
+        if (targetStack.Count > 0) {
+            isMoving = true;
+            animator.SetTrigger("Move");
+        }
+
     }
 
     private void Update() {
@@ -42,7 +83,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void FixedUpdate() {
-        if (targetStack.Count > 0) {
+        if (targetStack.Count > 0 && !stopMove) {
             this.transform.parent.position = Vector3.MoveTowards(this.transform.parent.position, targetStack[0], speed*Time.deltaTime);
             this.transform.LookAt(targetStack[0]);
         }
@@ -60,6 +101,21 @@ public class PlayerController : MonoBehaviour
             if (targetStack.Count == 0 && isMoving) {
                 isMoving = false;
                 animator.SetTrigger("Idle");
+            }
+            
+            Animator pickUpAnimator = other.GetComponent<Animator>();
+            if (pickUpAnimator.GetCurrentAnimatorClipInfo(1)[0].clip.name.Equals("PickUpColorRed")) {
+                if (diePsInstance == null) {
+                    diePsInstance = Instantiate(diePsPrefab, Vector3.zero, Quaternion.identity);
+                    diePsInstance.transform.parent = transform.parent;
+                }
+                if (!diePsInstance.isPlaying) {
+                    diePsPrefab.Play();
+                    Debug.Log("Start Die");
+                }
+
+                animator.SetTrigger("Die");
+                stopMove = true;
             }
 
             //Disactive collider object
