@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public Text countText;   
     public ParticleSystem diePsPrefab;
-    public ParticleSystem spawnPsPrefab;          
+    public ParticleSystem spawnPsPrefab;   
+    public int HP = 10;       
 
     private Rigidbody rb;
     private int count;
@@ -17,11 +18,17 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Animator animator;
     private bool stopMove;
+    private int currentHP;
+
+    private Image hpValueImg;
+    private Text timer;
+    private float time;
 
     private ParticleSystem diePsInstance =  null;
     private ParticleSystem spawnPsInstance = null;
 
     public void Start() {
+        currentHP = HP;
         rb = this.GetComponent<Rigidbody>();
         count = 0;
         countText.text = "Count: 0";
@@ -29,6 +36,9 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
         animator = this.GetComponent<Animator>();
         StartSpawn();
+
+        hpValueImg = GameObject.Find("HPValue").GetComponent<Image>();
+        timer = GameObject.Find("Timer").GetComponent<Text>();
     }
 
     public void StartSpawn() {
@@ -41,6 +51,7 @@ public class PlayerController : MonoBehaviour
         if (spawnPsInstance == null) {
             spawnPsInstance = Instantiate(spawnPsPrefab ,Vector3.zero , Quaternion.identity);
             spawnPsInstance.transform.parent = transform.parent;
+            spawnPsInstance.transform.localPosition = Vector3.zero;
         }
         if (!spawnPsInstance.isPlaying) {
             spawnPsInstance.Play();
@@ -66,6 +77,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update() {
+        time = time + Time.deltaTime;
+        timer.text = Mathf.Round(time / 60).ToString("00") + ":" + (time % 60).ToString("00");
         if (Input.GetMouseButtonUp(0)) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -106,16 +119,20 @@ public class PlayerController : MonoBehaviour
             Animator pickUpAnimator = other.GetComponent<Animator>();
             if (pickUpAnimator.GetCurrentAnimatorClipInfo(1)[0].clip.name.Equals("PickUpColorRed")) {
                 if (diePsInstance == null) {
-                    diePsInstance = Instantiate(diePsPrefab, Vector3.zero, Quaternion.identity);
+                    diePsInstance = Instantiate(diePsPrefab, transform.parent.position, Quaternion.identity);
                     diePsInstance.transform.parent = transform.parent;
+                    diePsInstance.transform.localPosition = Vector3.zero;
                 }
                 if (!diePsInstance.isPlaying) {
-                    diePsPrefab.Play();
+                    diePsInstance.Play();
                     Debug.Log("Start Die");
                 }
 
                 animator.SetTrigger("Die");
                 stopMove = true;
+
+                currentHP = currentHP - 1;
+                hpValueImg.fillAmount = 1.0f * currentHP / HP;
             }
 
             //Disactive collider object
